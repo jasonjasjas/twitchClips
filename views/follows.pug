@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1 Search by your follows
+  p Enter your username below
+  form(method='POST' action='')
+    div.form-group.class.form-row.align-items-center
+      div.col-auto
+        label.sr-only(for='username') Username
+        input#username.form-control.mb-2(type='text',placeholder='YourUsername' name='username', required='true', value=(username === undefined ? '' : username))
+      div.col-auto
+        button.btn.btn-primary.mb-2(type='submit') Search
+ 
+
+  if followers !== undefined    
+    ul
+      each user in followers
+        li
+          a(href='/user/' + user.to_id) #{user.to_name} 
+          
+  if error
+    p= error

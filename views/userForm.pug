@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 Search user
+  p Search user's clips
+  form(method='POST' action='')
+    div.form-group.class.form-row.align-items-center
+      div.col-auto
+        label.sr-only(for='username') Username
+        input#username.form-control.mb-2(type='text',placeholder='Username' name='username', required='true', value=(username === undefined ? '' : username))
+      div.col-auto
+        button.btn.btn-primary.mb-2(type='submit') Search
+  if error
+    p= error

@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1= title
+  p Select the date range
+  form(method='GET' action='')
+    div.form-group
+      label(for='startdate') Start Date
+      input#startdate.formcontrol(type='date', name='startdate',value=(startdate === undefined ? '' : startdate))
+      label(for='enddate') End Date
+      input#startdate.formcontrol(type='date', name= 'enddate' , value=(enddate === undefined ? '' : enddate))     
+      button.btn.btn-primary.mb-2(type='submit') Search 
+  if clips !== undefined    
+    ul
+      each clip in clips
+        
+        li
+          a(href=clip.url) #{clip.title} (views: #{clip.view_count})
+            img(src=clip.thumbnail_url width='10%')
+        
+  if error
+    p= error
