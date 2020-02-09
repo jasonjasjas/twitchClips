@@ -1,22 +1,51 @@
 extends layout
 
 block content
+  script(src = '/javascripts/setDate.js')
   h1= title
   p Select the date range
+  button#monthback.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') <- Month 
+  button#weekback.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') <- Week 
+  button#dayback.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') <- Day 
+  button#dayforward.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') Day ->
+  button#weekforward.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') Week ->
+  button#monthforward.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') Month ->
   form(method='GET' action='')
     div.form-group
-      label(for='startdate') Start Date
-      input#startdate.formcontrol(type='date', name='startdate',value=(startdate === undefined ? '' : startdate))
-      label(for='enddate') End Date
-      input#startdate.formcontrol(type='date', name= 'enddate' , value=(enddate === undefined ? '' : enddate))     
+      label(for='startdate') From
+      input#startdate.formcontrol(type='date', name='startdate',value=(startdate === undefined ? '' : startdate), style='margin: 0px 10px 0px 0px')
+      label(for='enddate') To 
+      input#enddate.formcontrol(type='date', name= 'enddate' , value=(enddate === undefined ? '' : enddate), style='margin: 0px 10px 0px 0px')     
       button.btn.btn-primary.mb-2(type='submit') Search 
+
+  
+  h5
+    span.badge.badge-secondary(style='padding: 0px; margin: 0px 10px 0px 0px')
+      button#dayminus.btn.btn-danger(type='button', style='margin: 0px 5px 0px 0px') -
+      | Day
+      button#dayadd.btn.btn-success(type='button', style='margin: 0px 0px 0px 5px') +
+  
+    span.badge.badge-secondary(style='padding: 0px; margin: 0px 10px 0px 0px')
+      button#weekminus.btn.btn-danger(type='button', style='margin: 0px 5px 0px 0px') -
+      | Week
+      button#weekadd.btn.btn-success(type='button', style='margin: 0px 0px 0px 5px') +
+
+    span.badge.badge-secondary(style='padding: 0px; margin: 0px 10px 0px 0px')
+      button#monthminus.btn.btn-danger(type='button', style='margin: 0px 5px 0px 0px') -
+      | Month
+      button#monthadd.btn.btn-success(type='button', style='margin: 0px 0px 0px 5px') +
   if clips !== undefined    
-    ul
+    if(startdate && enddate)
+      p #{startdate} to #{enddate} 
+    else
+      p Range: All Time
+    div.grid-container.grid-container--fill
       each clip in clips
-        
-        li
-          a(href=clip.url) #{clip.title} (views: #{clip.view_count})
-            img(src=clip.thumbnail_url width='10%')
+        div.grid-element
+            a(href=clip.url) 
+              p(style='color:white') #{clip.title} 
+                span(style='color:white;float:right') (views: #{clip.view_count})
+              img(src=clip.thumbnail_url width='100%')
         
   if error
     p= error
