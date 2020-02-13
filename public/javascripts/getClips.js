@@ -57,6 +57,9 @@ function getClips(id,startdate,enddate,callback,cursor){
                     "<div class='grid-element' id='"+ title +"'><a href ='"+ link + "'><p style ='color:white'>"+ title +"<span style='color:white;float:right'>(views: " + views + ")</span></p><img src='" + img + "' width ='100%'></a></div>");
             }
             callback();
+        },
+        error: function(result){
+            console.log(result);
         }
     });
 }
