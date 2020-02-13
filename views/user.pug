@@ -2,6 +2,8 @@ extends layout
 
 block content
   script(src = '/javascripts/setDate.js')
+  script(src='/javascripts/getClips.js')
+  script(src='/javascripts/filterClips.js')
   h1= title
   p Select the date range
   button#monthback.btn.btn-secondary.mb-2(type='button',style='margin: 0px 10px 0px 0px') <- Month 
@@ -15,7 +17,9 @@ block content
       label(for='startdate') From
       input#startdate.formcontrol(type='date', name='startdate',value=(startdate === undefined ? '' : startdate), style='margin: 0px 10px 0px 0px')
       label(for='enddate') To 
-      input#enddate.formcontrol(type='date', name= 'enddate' , value=(enddate === undefined ? '' : enddate), style='margin: 0px 10px 0px 0px')     
+      input#enddate.formcontrol(type='date', name= 'enddate' , value=(enddate === undefined ? '' : enddate), style='margin: 0px 10px 0px 0px')  
+      input#cursor.formcontrol(type='hidden', name= 'cursor' , value=cursor)
+      input#id.formcontrol(type='hidden', name= 'id' , value=id)
       button.btn.btn-primary.mb-2(type='submit') Search 
 
   
@@ -34,6 +38,8 @@ block content
       button#monthminus.btn.btn-danger(type='button', style='margin: 0px 5px 0px 0px') -
       | Month
       button#monthadd.btn.btn-success(type='button', style='margin: 0px 0px 0px 5px') +
+  form(autocomplete="off")
+    input#filter(type='text',placeholder='Filter title' name='username')
   if clips !== undefined    
     if(startdate && enddate)
       p #{startdate} to #{enddate} 
@@ -41,11 +47,12 @@ block content
       p Range: All Time
     div.grid-container.grid-container--fill
       each clip in clips
-        div.grid-element
+        div.grid-element(id=clip.title) 
             a(href=clip.url) 
               p(style='color:white') #{clip.title} 
                 span(style='color:white;float:right') (views: #{clip.view_count})
               img(src=clip.thumbnail_url width='100%')
-        
+  button#loadmore.btn.btn-secondary.mb-2(type='button') LoadMore
+  div#error 
   if error
     p= error

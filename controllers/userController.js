@@ -37,14 +37,34 @@ exports.getUserID = function(req, res, next) {
 
 //user/:id GET
 exports.showClips = function(req, res, next) {
-    var url = 'https://api.twitch.tv/helix/clips?first=100&broadcaster_id='+ req.params.id;
-    if(req.query.enddate){
-        url += '&ended_at=' + req.query.enddate + 'T23:59:59Z';
+    getClips(req.params.id,req.query.startdate,req.query.enddate,function(dataObject){
+        if(!dataObject.hasOwnProperty('data')){
+            res.render('user', {title: req.params.id, error: JSON.parse(body).message + ' ' + JSON.parse(body).error, startdate:req.query.startdate, enddate:req.query.enddate});
+            return;
+        } else if(dataObject.data.length == 0){
+            getUserName(req, res, next, req.params.id);
+            return;
+        }else{
+            res.render('user', {title: dataObject.data[0].broadcaster_name, clips: dataObject.data, startdate:req.query.startdate, enddate:req.query.enddate, cursor: dataObject.pagination.cursor, id:req.params.id});
+        }
+    });
+
+
+    
+
+};
+
+function getClips(id,startdate,enddate,callback,cursor){
+    var url = 'https://api.twitch.tv/helix/clips?first=100&broadcaster_id='+ id;
+    if(enddate){
+        url += '&ended_at=' + enddate + 'T23:59:59Z';
     }
-    if(req.query.startdate){
-        url += '&started_at=' + req.query.startdate + 'T00:00:00Z';
+    if(startdate){
+        url += '&started_at=' + startdate + 'T00:00:00Z';
     }
-    console.log(url);
+    if(cursor){
+        url += '&after=' + cursor;
+    }
     request(
         {
             url : url,
@@ -54,23 +74,10 @@ exports.showClips = function(req, res, next) {
         },
         function (error, response, body) {
             if(error){return next(error); }
-            //console.log(JSON.parse(body));
-            if(!JSON.parse(body).hasOwnProperty('data')){
-                console.log(JSON.parse(body));
-                res.render('user', {title: req.params.id, error: JSON.parse(body).message + ' ' + JSON.parse(body).error, startdate:req.query.startdate, enddate:req.query.enddate});
-                return;
-            }
-            if(JSON.parse(body).data.length == 0){
-                getUserName(req, res, next, req.params.id);
-                return;
-            }
-            dataObject = JSON.parse(body);
-            //console.log(dataObject);
-            res.render('user', {title: dataObject.data[0].broadcaster_name, clips: dataObject.data, startdate:req.query.startdate, enddate:req.query.enddate});
+            callback(JSON.parse(body));
         }
     );
-
-};
+}
 
 
 function getUserName(req, res, next, id){
